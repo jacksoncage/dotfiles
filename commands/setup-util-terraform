@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# https://developer.hashicorp.com/terraform/downloads
+
+# https://releases.hashicorp.com/terraform/
+# trunk-ignore-all(shellcheck/SC1073)
+# trunk-ignore-all(shellcheck/SC1072)
+# terraform_1.4.5_darwin_amd64.zip
+# terraform_1.4.5_linux_arm.zip
+# terraform_1.4.5_linux_arm64.zip
+# terraform_1.4.5_linux_amd64.zip
+# terraform_1.4.5_windows_amd64.zip
+
+# https://packages.debian.org/sid/amd64/terraform/filelist
+# /usr/bin/terraform
+
+function setup_util_terraform() (
+    source "$DOROTHY/sources/bash.bash"
+
+    # improve performance for detectable utilities with conditional assets
+    if setup-util "$@" --check --cli=terraform; then
+        return 0
+    fi
+
+    # prefer apt last, as it installs an outdated version
+    # no apk
+    local arch options=(
+        --cli='terraform'
+        --order='... apt'
+        "$@"
+        APT='terraform' # UBUNTU
+        AUR='terraform' # ARCH
+        BREW='terraform'
+        BSD='terraform'
+        CHOCO='terraform'
+        CONDA_CHANNEL='conda-forge'
+        CONDA='terraform'
+        EMERGE='terraform' # GENTOO
+        EOPKG='terraform'  # SOLUS
+        NIX='nixpkgs.terraform'
+        PORT='terraform'
+        RPM='terraform' # FEDORA
+        SCOOP='terraform'
+        SNAP_CHANNEL='edge'
+        SNAP='terraform'
+        ZYPPER='terraform' # SUSE
+    )
+    function get_github_asset_url {
+        github-download \
+            --dry \
+            --slug='hashicorp/terraform' \
+            --latest \
+            --asset-regexp="$(echo-escape-regexp -- "$1")$" | echo-first-line || :
+    }
+    function add_download_option {
+        options+=(
+            DOWNLOAD="$(get_github_asset_url "$1")"
+            DOWNLOAD_ARCHIVE_GLOB='*/terraform'
+        )
+    }
+    if is-mac; then
+        add_download_option '_darwin_amd64.zip'
+    else
+        arch="$(get-arch)"
+        if test "$arch" = 'a64'; then
+            add_download_option '_linux_arm64.zip'
+        elif test "$arch" = 'a32'; then
+            add_download_option '_linux_arm.zip'
+        elif test "$arch" = 'x64'; then
+            add_download_option '_linux_amd64.zip'
+        fi
+    fi
+    setup-util "${options[@]}"
+)
+
+# fire if invoked standalone
+if test "$0" = "${BASH_SOURCE[0]}"; then
+    setup_util_terraform "$@"
+fi
