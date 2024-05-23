@@ -31,9 +31,10 @@ APT_INSTALL=(
 	'gnome-keyring'
 	'libnotify-bin'
 	'traceroute'
-	'dropbox'
+	'nautilus-dropbox'
 	'tailscale'
 	'slack'
+    'direnv'
 
 )
 
