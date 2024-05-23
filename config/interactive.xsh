@@ -1,4 +1,4 @@
 #!/usr/bin/env xsh
 
 # Dorothy
-$DOROTHY_THEME = 'system'
+$DOROTHY_THEME = 'starship'

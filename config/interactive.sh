@@ -4,7 +4,7 @@
 
 # Dorothy
 alias d='dorothy'
-export DOROTHY_THEME='system'
+export DOROTHY_THEME='starship'
 
 # debian specific aliases
 alias pbcopy='xclip -selection clipboard'
