@@ -1,0 +1,155 @@
+#!/usr/bin/env bash
+
+function github_all() (
+	source "$DOROTHY/sources/bash.bash"
+
+	# if the secrets aren't provided, fetch them and reload
+	if test -z "${GITHUB_ACCESS_TOKEN-}"; then
+		github-auth -- "$0" "$@"
+		return
+	fi
+
+	# =====================================
+	# Helpers
+
+	function fetch_all_repos {
+		fetch 'https://bevry.me/api/github/repos' | jq -r '.[]'
+	}
+
+	function fetch_package_data {
+		local slug="$1"
+		fetch "https://raw.githubusercontent.com/${slug}/HEAD/package.json" 2>/dev/null
+	}
+
+	function fetch_backers {
+		local slug="$1"
+		sponsors="$(fetch_package_data "$slug" | jq -r '.backers[]' 2>/dev/null || :)"
+		if test -z "$sponsors"; then
+			echo-element --openclose="$slug"
+		else
+			echo-element --open="$slug"
+			__print_line "$sponsors"
+			echo-element --close="$slug"
+			open "https://github.com/$slug"
+		fi
+	}
+
+	# enable auto-merge
+	function enable_auto_merge {
+		local slug="$1"
+		gh repo edit "$slug" --enable-auto-merge --enable-rebase-merge --enable-squash-merge || :
+	}
+
+	# correct npm owners
+	local whoami=''
+	function correct_npm_owners {
+		local slug="$1" packageName owners owner need_access_change
+		if test -z "$whoami"; then
+			whoami="$(npm whoami owners)"
+		fi
+		packageName="$(fetch_package_data "$slug" | jq -r '.name' || :)"
+		if test -n "$packageName" -a "$packageName" != 'templatebinding'; then
+			owners="$(npm owner ls "$packageName" 2>/dev/null || :)"
+			if test -n "$owners"; then
+				__print_line "$owners"
+				if grep --quiet --fixed-strings --regexp="$whoami" <<<"$owners"; then
+					npm owner add bevryme "$packageName"
+					npm access grant read-write bevry:developers "$packageName" || :
+					npm access grant read-only bevry:maintainers "$packageName" || :
+					if [[ $slug == *docpad* ]]; then
+						npm access grant read-only docpad:maintainers "$packageName" || :
+					fi
+					need_access_change='no'
+					while read -r owner <&5; do
+						owner="${owner%% *}" # get everything before the first space
+						if test "$owner" != 'bevryme'; then
+							need_access_change='yes'
+							break
+							# npm owner rm "$owner" "$packageName"  || :
+						fi
+					done 5< <(__print_line "$owners")
+					if test "$need_access_change" = 'yes'; then
+						open "https://www.npmjs.com/package/$package/access"
+					fi
+					# ignore error on this, as if it is already set, it returns E401
+					npm access set mfa=automation "$packageName" 2>/dev/null || :
+				fi
+			fi
+		fi
+	}
+
+	# recreate all dependabot PRs
+	function recreate_dependabot_prs {
+		local slug="$1" pr
+		while read -r pr <&5; do
+			# gh pr comment "$pr" --body '@dependabot recreate'
+			gh pr close "$pr" --repo "$slug" &
+		done 5< <(gh pr list --repo "$slug" --app 'dependabot' --json url | jq -r '.[].url')
+	}
+
+	# close all dependabot actions
+	function close_all_dependabot_actions {
+		local slug="$1" run
+		while read -r run <&5; do
+			gh run cancel "$run" --repo "$slug" &
+		done 5< <(gh run list --status 'queued' --user dependabot --repo "$slug" --json databaseId | jq -r '.[].databaseId')
+	}
+
+	# clone labels
+	local delete_labels=(
+		'discussion'
+		'documentation'
+		'duplicate'
+		'good first issue'
+		'help wanted'
+		'help'
+		'invalid'
+		'note'
+		'question'
+		'support'
+		'type support / question'
+		'type support/question'
+		'wontfix'
+	)
+	local new_labels
+	mapfile -t new_labels < <(gh label list --repo bevry/dorothy --json=name,description,color | jq -r '.[] | .name + "\n" + .description + "\n" + .color')
+	function fix_labels {
+		local slug="$1" label i
+		if test "$slug" = 'docpad/docpad'; then
+			return 0
+		fi
+		gh label clone bevry/dorothy --repo "$slug" 2>/dev/null || return 0
+		for label in "${delete_labels[@]}"; do
+			gh label delete "$label" --yes --repo "$slug" 2>/dev/null || :
+		done
+		for ((i = 0; i < ${#new_labels[@]}; i += 3)); do
+			label="${new_labels[i]}"
+			gh label edit "$label" --repo "$slug" --description "${new_labels[i + 1]}" --color "${new_labels[i + 2]}" 2>/dev/null || :
+		done
+	}
+
+	# =====================================
+	# Prepare
+
+	# defaults slugs to all our slugs
+	local slugs=()
+	if test "$#" -eq 0; then
+		mapfile -t slugs < <(fetch_all_repos)
+	else
+		slugs=("$@")
+		shift $#
+	fi
+
+	# =====================================
+	# Action
+
+	local slug
+	for slug in "${slugs[@]}"; do
+		fix_labels "$slug"
+	done
+)
+
+# fire if invoked standalone
+if test "$0" = "${BASH_SOURCE[0]}"; then
+	github_all "$@"
+fi

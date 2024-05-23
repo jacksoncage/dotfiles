@@ -1,0 +1,10 @@
+# generic
+**/.DS_Store
+.vscode/
+node_modules
+package-lock.json
+
+
+# custom to dorothy user configuration
+commands.local/
+config.local/
