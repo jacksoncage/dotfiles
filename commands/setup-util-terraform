@@ -1,19 +1,6 @@
 #!/usr/bin/env bash
 
-# https://developer.hashicorp.com/terraform/downloads
-
-# https://releases.hashicorp.com/terraform/
-# trunk-ignore-all(shellcheck/SC1073)
-# trunk-ignore-all(shellcheck/SC1072)
-# terraform_1.4.5_darwin_amd64.zip
-# terraform_1.4.5_linux_arm.zip
-# terraform_1.4.5_linux_arm64.zip
-# terraform_1.4.5_linux_amd64.zip
-# terraform_1.4.5_windows_amd64.zip
-
-# https://packages.debian.org/sid/amd64/terraform/filelist
-# /usr/bin/terraform
-
+# Function to setup Terraform
 function setup_util_terraform() (
     source "$DOROTHY/sources/bash.bash"
 
@@ -22,54 +9,60 @@ function setup_util_terraform() (
         return 0
     fi
 
-    # prefer apt last, as it installs an outdated version
-    # no apk
-    local arch options=(
-        --cli='terraform'
-        --order='... apt'
-        "$@"
-        APT='terraform' # UBUNTU
-        AUR='terraform' # ARCH
-        BREW='terraform'
-        BSD='terraform'
-        CHOCO='terraform'
-        CONDA_CHANNEL='conda-forge'
-        CONDA='terraform'
-        EMERGE='terraform' # GENTOO
-        EOPKG='terraform'  # SOLUS
-        NIX='nixpkgs.terraform'
-        PORT='terraform'
-        RPM='terraform' # FEDORA
-        SCOOP='terraform'
-        SNAP_CHANNEL='edge'
-        SNAP='terraform'
-        ZYPPER='terraform' # SUSE
-    )
-    function get_github_asset_url {
-        github-download \
-            --dry \
-            --slug='hashicorp/terraform' \
-            --latest \
-            --asset-regexp="$(echo-escape-regexp -- "$1")$" | echo-first-line || :
+    # Function to get the latest version of Terraform
+    function get_latest_version {
+        curl -s https://api.github.com/repos/hashicorp/terraform/releases/latest | grep -Po '"tag_name": "\K.*?(?=")'
     }
+
+    # setup
+    local arch version options=(
+        --cli='terraform'
+        "$@"
+        AUR='terraform'
+        BREW='terraform'
+        PORT='terraform'
+        SCOOP='terraform'
+        PKG='terraform'
+        PKGIN='terraform'
+        PKGADD='terraform'
+    )
+
+    version=$(get_latest_version)
+    version=${version#v}  # Remove leading 'v' if present
+
     function add_download_option {
+        local platform="$1" extension="$2"
+        local url="https://releases.hashicorp.com/terraform/${version}/terraform_${version}_${platform}.${extension}"
         options+=(
-            DOWNLOAD="$(get_github_asset_url "$1")"
-            DOWNLOAD_ARCHIVE_GLOB='*/terraform'
+            DOWNLOAD="$url"
+            DOWNLOAD_UNZIP_FORMAT='auto'
+            DOWNLOAD_ARCHIVE_GLOB='terraform'
         )
     }
+
+    arch="$(get-arch)"
     if is-mac; then
-        add_download_option '_darwin_amd64.zip'
-    else
-        arch="$(get-arch)"
         if test "$arch" = 'a64'; then
-            add_download_option '_linux_arm64.zip'
-        elif test "$arch" = 'a32'; then
-            add_download_option '_linux_arm.zip'
+            add_download_option 'darwin_arm64' 'zip'
         elif test "$arch" = 'x64'; then
-            add_download_option '_linux_amd64.zip'
+            add_download_option 'darwin_amd64' 'zip'
+        fi
+    elif is-linux; then
+        if test "$arch" = 'a64'; then
+            add_download_option 'linux_arm64' 'zip'
+        elif test "$arch" = 'x64'; then
+            add_download_option 'linux_amd64' 'zip'
+        elif test "$arch" = 'x32'; then
+            add_download_option 'linux_386' 'zip'
+        fi
+    elif is-windows; then
+        if test "$arch" = 'x64'; then
+            add_download_option 'windows_amd64' 'zip'
+        elif test "$arch" = 'x32'; then
+            add_download_option 'windows_386' 'zip'
         fi
     fi
+
     setup-util "${options[@]}"
 )
 

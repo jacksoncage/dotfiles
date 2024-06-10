@@ -4,7 +4,6 @@
 
 if is-mac; then
 	USER_SHELLS=(
-		fish
 		bash
 		zsh
 		sh

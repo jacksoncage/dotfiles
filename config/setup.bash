@@ -28,14 +28,15 @@ APK_INSTALL=()
 # software-properties-common
 # 	`atomicparsley` is a youtube-dl dependency
 APT_INSTALL=(
+	'direnv'
 	'gnome-keyring'
+	'google-cloud-cli'
 	'libnotify-bin'
-	'traceroute'
 	'nautilus-dropbox'
+	'python3-pip'
 	'tailscale'
-	'slack'
-    'direnv'
-
+	'traceroute'
+  'libxcb-cursor0'
 )
 
 # Snap
@@ -85,27 +86,20 @@ HOMEBREW_UNINSTALL=(
 HOMEBREW_FORMULAS=(
 	'git-extras'
 	'terminal-notifier'
-	'tmux'
 	'watch'
 	'watchman'
 )
 HOMEBREW_SLOW_FORMULAS=(
 	'shellcheck'
 )
-# 'twitch'
 HOMEBREW_CASKS=(
 	'adguard'
 	'audio-hijack'
 	'loopback'
 	'soundsource'
-	# 'aerial'
-	# 'calibre'
-	# 'firefox'
-	# 'multipass'
-	# 'pocket-casts'
-	# 'raspberry-pi-imager'
-	# 'spotify'
-	# 'zoom'
+	'calibre'
+	'spotify'
+	'zoom'
 )
 HOMEBREW_FONTS=(
 	'font-cantarell'
@@ -135,22 +129,8 @@ HOMEBREW_FONTS=(
 	'font-ubuntu'
 	'font-victor-mono'
 )
-# 'font-dejavu-sans-mono-nerd-font'
-# 'font-fira-code-nerd-font'
-# 'font-fira-mono-nerd-font'
-# 'font-inconsolata-go-nerd-font'
-# 'font-iosevka-nerd-font'
-# 'font-jetbrains-mono-nerd-font'
-# 'font-ubuntu-mono-nerd-font'
-# 'font-ubuntu-nerd-font'
-# 'font-victor-mono-nerd-font'
 
 # Ruby
-# compass
-# ffi
-# sass
-# twurl
-# git-up, deprecated, fails to install on macos, replaced by `git-up` alias
 GEM_INSTALL=()
 
 # Python
@@ -164,8 +144,11 @@ PIPX_INSTALL=(
 	'poetry'
 	'stig'
 	'youtube_dl'
+  'pre-commit'
 )
-# PYTHON3_PIP_INSTALL=('bitcoinlib' 'cairosvg')
+#PYTHON3_PIP_INSTALL=(
+#  'pre-commit'
+#)
 # PYTHON2_PIP_INSTALL=('PyPDF2')
 
 # Node.js
@@ -201,11 +184,6 @@ NPM_INSTALL=(
 	'@githubnext/github-copilot-cli'
 )
 NODE_VERSIONS=(
-	0.8
-	0.10
-	0.12
-	4
-	6
 	8
 	10
 	12
@@ -214,6 +192,7 @@ NODE_VERSIONS=(
 	18
 	20
 	21
+  22
 )
 
 # Rust / Cargo / Crates.io
@@ -227,8 +206,8 @@ CARGO_INSTALL=()
 SETUP_UTILS=(
 	'1password-cli'
 	'aria2'
-	'bash'
 	'bandwhich'
+	'bash'
 	'bat'
 	'bottom'
 	'curl'
@@ -240,24 +219,25 @@ SETUP_UTILS=(
 	'gocryptfs'
 	'gpg'
 	'jq'
-	'nu'
 	'nano'
 	'netstat'
 	'nordvpn'
-	'openvpn'
+	'nu'
 	'obs'
+	'openvpn'
 	'prettier'
+	'python'
 	'ripgrep'
-	'sd'
 	'screen'
+	'sd'
 	'shellcheck'
 	'syncthing'
 	'tealdeer'
 	'teip'
 	'tree'
 	'unziptar'
-	'vscode'
 	'vim'
 	'vnc'
+	'vscode'
 	'wget'
 )
