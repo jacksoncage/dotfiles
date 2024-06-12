@@ -20,4 +20,27 @@ Verify installation:
 dorothy theme
 ```
 
-# Dotfiles
+## foot configuration
+
+In foot config set login-shell to yes as dorothy is only executed if shell is login. File `~/.config/foot/foot.ini`:
+```ini
+login-shell=yes
+```
+
+## Setup system
+
+```bash
+setup-system install
+```
+
+login with gh
+
+```bash
+gh auth login
+```
+
+setup all utils
+
+```bash
+setup-utils install
+```
