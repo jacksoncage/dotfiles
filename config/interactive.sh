@@ -6,6 +6,13 @@
 alias d='dorothy'
 export DOROTHY_THEME='starship'
 
+# awslogin tool seenthis
+export AWS_PROFILE=aws_mfa_session
+source /home/love/code/seenthis/dev-tools/awslogin/aws_session_token.sh
+
+# add mcfly to shell
+eval "$(mcfly init bash)"
+
 # debian specific aliases
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
