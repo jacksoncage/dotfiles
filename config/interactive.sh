@@ -13,6 +13,12 @@ source /home/love/code/seenthis/dev-tools/awslogin/aws_session_token.sh
 # add mcfly to shell
 eval "$(mcfly init bash)"
 
+# nvm
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+nvm use 20
+
 # debian specific aliases
 alias pbcopy='xclip -selection clipboard'
 alias pbpaste='xclip -selection clipboard -o'
