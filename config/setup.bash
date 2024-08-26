@@ -32,11 +32,11 @@ APT_INSTALL=(
 	'gnome-keyring'
 	'google-cloud-cli'
 	'libnotify-bin'
+	'libxcb-cursor0'
 	'nautilus-dropbox'
 	'python3-pip'
 	'tailscale'
 	'traceroute'
-  'libxcb-cursor0'
 )
 
 # Snap

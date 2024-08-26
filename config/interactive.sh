@@ -122,6 +122,7 @@ alias gir="git"
 
 # kubectl
 alias kc='kubectl'
+complete -o default -F __start_kubectl kc
 
 # Terraform
 alias tf='terraform'

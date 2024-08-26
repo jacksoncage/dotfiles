@@ -3,4 +3,4 @@
 # use inline `export VAR=...` statements, for fish compatibility`
 
 # Unless no, the autocompletion will be loaded if applicable
-export AUTOCOMPLETE_TEA='no'
+export AUTOCOMPLETE_TEA='yes'
