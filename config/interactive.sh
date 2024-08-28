@@ -121,6 +121,7 @@ alias gitr="git"
 alias gir="git"
 
 # kubectl
+source <(kubectl completion bash)
 alias kc='kubectl'
 complete -o default -F __start_kubectl kc
 
