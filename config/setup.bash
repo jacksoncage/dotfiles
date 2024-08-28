@@ -37,6 +37,7 @@ APT_INSTALL=(
 	'python3-pip'
 	'tailscale'
 	'traceroute'
+  'fzf'
 )
 
 # Snap
