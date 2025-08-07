@@ -45,7 +45,6 @@ APT_INSTALL=(
 	'google-cloud-cli-gke-gcloud-auth-plugin'
 	'libnotify-bin'
 	'libxcb-cursor0'
-	'nautilus-dropbox'
 	'neovim'
 	'p7zip-full'
 	'pgadmin4'
@@ -240,7 +239,6 @@ SETUP_UTILS=(
 	bash
 	bat
 	bottom
-	calibre
 	chrome
 	curl
 	cursor
