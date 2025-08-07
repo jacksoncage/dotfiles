@@ -2,6 +2,24 @@
 
 This is my user configuration for the [Dorothy](https://github.com/bevry/dorothy) dotfile ecosystem, optimized for Ubuntu Sway desktop environments.
 
+## 🎯 Complete Install (Copy & Paste)
+
+Run this entire block to set up everything automatically:
+
+```bash
+# Install prerequisites
+sudo apt-get update && sudo apt-get install -y bash curl git
+
+# Clone this configuration
+git clone https://github.com/jacksoncage/dotfiles ~/.config/dorothy
+
+# Install Dorothy (select your shell when prompted, point to ~/.config/dorothy for dotfiles)
+bash -ic "$(curl -fsSL https://dorothy.bevry.me/install)"
+
+# Open new terminal, then run:
+setup-repositories && setup-system install && setup-utils install
+```
+
 ## 🚀 Quick Start (Fresh Ubuntu Sway Install)
 
 ### 1. Prerequisites
@@ -12,7 +30,7 @@ sudo apt-get install bash curl git
 
 ### 2. Clone This Configuration
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO ~/.config/dorothy
+git clone https://github.com/jacksoncage/dotfiles ~/.config/dorothy
 ```
 
 ### 3. Install Dorothy
@@ -154,6 +172,28 @@ setup-repositories
 
 # Update package lists
 sudo apt update
+```
+
+## 🧪 Testing Custom Commands
+
+Test the custom commands in this configuration:
+
+```bash
+# Setup repositories for VS Code, pgAdmin, etc
+setup-repositories
+
+# Terraform setup
+setup-util-terraform
+
+# GitHub authentication for all accounts
+github-auth
+github-all
+
+# Git merge helper
+git-merge
+
+# All authentication setup
+all-auth
 ```
 
 ## 📚 Dorothy Commands
