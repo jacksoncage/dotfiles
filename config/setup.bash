@@ -35,7 +35,6 @@ APT_INSTALL=(
 	'awscli'
 	'azote'
 	'bluetuith'
-	'boosteroid'
 	'code'
 	'direnv'
 	'docker-compose'
