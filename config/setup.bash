@@ -28,16 +28,38 @@ APK_INSTALL=()
 # software-properties-common
 # 	`atomicparsley` is a youtube-dl dependency
 APT_INSTALL=(
+	'7zip'
+	'apache2-utils'
+	'audacious'
+	'autotiling'
+	'awscli'
+	'azote'
+	'bluetuith'
+	'boosteroid'
+	'code'
 	'direnv'
+	'docker-compose'
+	'foot'
+	'git-lfs'
 	'gnome-keyring'
 	'google-cloud-cli'
+	'google-cloud-cli-gke-gcloud-auth-plugin'
 	'libnotify-bin'
 	'libxcb-cursor0'
 	'nautilus-dropbox'
+	'neovim'
+	'p7zip-full'
+	'pgadmin4'
 	'python3-pip'
+	'sway'
+	'swayidle'
+	'swaylock'
+	'swayr'
 	'tailscale'
 	'traceroute'
-  'fzf'
+	'ubuntu-sway-standard'
+	'waybar'
+	'whois'
 )
 
 # Snap
@@ -177,12 +199,20 @@ PIPX_INSTALL=(
 # cartera
 # coinmon
 NPM_INSTALL=(
+	'@anthropic-ai/claude-code'
+	'@githubnext/github-copilot-cli'
+	'@modelcontextprotocol/server-filesystem'
+	'@modelcontextprotocol/server-postgres'
+	'@openai/codex'
+	'@seenthis-ab/salming-mcp'
 	'boundation'
-	'serve'
 	'eslint'
 	'json'
+	'opencode-ai'
+	'repomix'
+	'serve'
 	'typescript'
-	'@githubnext/github-copilot-cli'
+	'vercel'
 )
 NODE_VERSIONS=(
 	8
@@ -205,40 +235,49 @@ CARGO_INSTALL=()
 # setup-util-*
 # 'warp' - caused too many issues, using adguard mac app instead
 SETUP_UTILS=(
-	'1password-cli'
-	'aria2'
-	'bandwhich'
-	'bash'
-	'bat'
-	'bottom'
-	'curl'
-	'delta'
-	'deno'
-	'docker'
-	'fish'
-	'git'
-	'gocryptfs'
-	'gpg'
-	'jq'
-	'nano'
-	'netstat'
-	'nordvpn'
-	'nu'
-	'obs'
-	'openvpn'
-	'prettier'
-	'python'
-	'ripgrep'
-	'screen'
-	'sd'
-	'shellcheck'
-	'syncthing'
-	'tealdeer'
-	'teip'
-	'tree'
-	'unziptar'
-	'vim'
-	'vnc'
-	'vscode'
-	'wget'
+	1password-cli
+	aria2
+	bandwhich
+	bash
+	bat
+	bottom
+	calibre
+	chrome
+	curl
+	cursor
+	delta
+	deno
+	docker
+	fish
+	fzf
+	git
+	gocryptfs
+	gpg
+	jq
+	keybase
+	kubectl
+	mcfly
+	nano
+	netstat
+	nordvpn
+	nu
+	obs
+	openvpn
+	prettier
+	python
+	ripgrep
+	screen
+	sd
+	shellcheck
+	slack
+	syncthing
+	tealdeer
+	teip
+	tree
+	unziptar
+	vim
+	vnc
+	vscode
+	wget
+	windsurf
 )

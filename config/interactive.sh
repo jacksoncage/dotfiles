@@ -2,6 +2,8 @@
 # shellcheck disable=SC2034
 # use inline `export VAR=...` statements, for fish compatibility`
 
+export PATH=/usr/local/go/bin:$HOME/.bun/bin:$HOME/.local/bin:$HOME/bin:$HOME/.kubectx:$PATH
+
 # Dorothy
 alias d='dorothy'
 export DOROTHY_THEME='starship'
@@ -9,6 +11,9 @@ export DOROTHY_THEME='starship'
 # awslogin tool seenthis
 export AWS_PROFILE=aws_mfa_session
 source /home/love/code/seenthis/dev-tools/awslogin/aws_session_token.sh
+
+# add fzf to shell
+source /home/love/.config/fzf-completion.bash
 
 # add mcfly to shell
 eval "$(mcfly init bash)"
@@ -18,6 +23,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 nvm use 20
+source <(npm completion)
 
 # debian specific aliases
 alias pbcopy='xclip -selection clipboard'

@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+# Setup custom repositories for packages not in standard repos
+
+# load the dorothy defaults
+source "$DOROTHY/sources/bash.bash"
+
+function setup_repositories() {
+    local repositories=()
+    
+    echo-style --h1='Setup Custom Repositories'
+    
+    # Check which repositories to setup
+    if ! command-exists tailscale; then
+        repositories+=('tailscale')
+    fi
+    
+    if ! command-exists gcloud; then
+        repositories+=('gcloud')
+    fi
+    
+    if ! command-exists code; then
+        repositories+=('vscode')
+    fi
+    
+    if ! command-exists pgadmin4; then
+        repositories+=('pgadmin')
+    fi
+    
+    if test "${#repositories[@]}" -eq 0; then
+        echo-style --success='All repositories already configured'
+        return 0
+    fi
+    
+    echo-style --notice="Setting up repositories: ${repositories[*]}"
+    
+    # Setup each repository
+    for repo in "${repositories[@]}"; do
+        case "$repo" in
+            'tailscale')
+                echo-style --h2='Setting up Tailscale repository'
+                curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+                curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+                ;;
+            'gcloud')
+                echo-style --h2='Setting up Google Cloud repository'
+                curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg
+                echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+                ;;
+            'vscode')
+                echo-style --h2='Setting up Visual Studio Code repository'
+                wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+                sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+                echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" | sudo tee /etc/apt/sources.list.d/vscode.list > /dev/null
+                rm -f packages.microsoft.gpg
+                ;;
+            'pgadmin')
+                echo-style --h2='Setting up pgAdmin repository'
+                curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
+                sudo sh -c 'echo "deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg] https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
+                ;;
+        esac
+    done
+    
+    # Update apt after adding repositories
+    echo-style --h2='Updating package lists'
+    sudo apt update
+    
+    echo-style --success='Repository setup complete'
+}
+
+# handle arguments
+case "${1:-}" in
+    '' | 'install')
+        setup_repositories
+        ;;
+    '--help' | 'help')
+        echo-style --h1='setup-repositories'
+        echo-style 'Setup custom repositories for Tailscale, Google Cloud, VS Code, and pgAdmin'
+        echo
+        echo-style --h2='USAGE'
+        echo '  setup-repositories [install]'
+        echo
+        echo-style --h2='OPTIONS'
+        echo '  install    Setup repositories (default)'
+        echo '  help       Show this help'
+        ;;
+    *)
+        echo-style --error="Unknown option: $1"
+        exit 1
+        ;;
+esac
